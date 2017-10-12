@@ -1,5 +1,2 @@
 # m_player
-How to use  
-```
-$ python3 m_player.py
-```
+Requires python-vlc
