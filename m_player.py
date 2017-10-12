@@ -2,6 +2,7 @@
 
 import curses
 import vlc
+import time
 
 active = 0
 
@@ -21,8 +22,9 @@ def init_scr():
     curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_WHITE)
     curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_RED, curses.COLOR_BLACK)
 
-    # Add the title of the player
+    # Add the title of the program
     title = "M_PLAYER"
     titleX = int(scrW/2) - int(len(title)/2)
     stdscr.addstr(0, titleX, title, curses.color_pair(1))
@@ -43,8 +45,12 @@ def user_input():
     return res
 
 def stop_media(active):
-    player.stop()
-    stdscr.addstr(active+7, 13+len(files[active].get_mrl()[33:]), " "*10)
+    if (player.is_playing()):
+        player.stop()
+        stdscr.addstr(active+7, 13+len(files[active].get_mrl()[33:]), " STOPPED ", curses.color_pair(4))
+        stdscr.refresh()
+        time.sleep(0.5) 
+        stdscr.addstr(active+7, 13+len(files[active].get_mrl()[33:]), " "*10)
 
 #def play_active():
 #    player.play()
@@ -59,15 +65,14 @@ while (action != "leave"):
         path = ("/Users/ramesses/Downloads/"+action[5:])
         files.add_media(path)
         for i in range(len(files)):
-            stdscr.addstr(i+7, 10, str(i+1)+". "+files[i].get_mrl()[33:], curses.color_pair(3))
+            stdscr.addstr(i+7, 10, str(i+1)+". ")
+            stdscr.addstr(i+7, 13, files[i].get_mrl()[33:], curses.color_pair(3))
 
     elif action[0:4] == "play":
         stop_media(active)
         active = int(action[5:])-1
         player.play_item_at_index(active)
-        print(files[active].get_mrl()[33:])
-        print(len(files[active].get_mrl()[33:]))
-        stdscr.addstr(active+7, 13+len(files[active].get_mrl()[33:]), ": Playing", curses.color_pair(2))
+        stdscr.addstr(active+7, 13+len(files[active].get_mrl()[33:]), ": PLAYING", curses.color_pair(2))
 
     elif action == "stop":
         stop_media(active)
