@@ -1,0 +1,2 @@
+python-vlc==3.0.18121
+windows-curses==2.3.1

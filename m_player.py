@@ -1,8 +1,7 @@
-#!/usr/bin/env python 
-
+import time
 import curses
 import vlc
-import time
+import os
 
 active = 0
 
@@ -47,13 +46,10 @@ def user_input():
 def stop_media(active):
     if (player.is_playing()):
         player.stop()
-        stdscr.addstr(active+7, 13+len(files[active].get_mrl()[33:]), " STOPPED ", curses.color_pair(4))
+        stdscr.addstr(active+7, 13+len(os.path.basename(files[active].get_mrl()[8:])), " STOPPED ", curses.color_pair(4))
         stdscr.refresh()
         time.sleep(0.5) 
-        stdscr.addstr(active+7, 13+len(files[active].get_mrl()[33:]), " "*10)
-
-#def play_active():
-#    player.play()
+        stdscr.addstr(active+7, 13+len(os.path.basename(files[active].get_mrl()[8:])), " "*10)
 
 init_scr()
 action = user_input()
@@ -62,17 +58,17 @@ action = user_input()
 while (action != "leave"):
     
     if action[0:4] == "open":
-        path = ("/Users/ramesses/Downloads/"+action[5:])
+        path = (action[5:])
         files.add_media(path)
         for i in range(len(files)):
             stdscr.addstr(i+7, 10, str(i+1)+". ")
-            stdscr.addstr(i+7, 13, files[i].get_mrl()[33:], curses.color_pair(3))
+            stdscr.addstr(i+7, 13, os.path.basename(files[i].get_mrl()[8:]), curses.color_pair(3))
 
     elif action[0:4] == "play":
         stop_media(active)
         active = int(action[5:])-1
         player.play_item_at_index(active)
-        stdscr.addstr(active+7, 13+len(files[active].get_mrl()[33:]), ": PLAYING", curses.color_pair(2))
+        stdscr.addstr(active+7, 13+len(os.path.basename(files[active].get_mrl()[8:])), ": PLAYING", curses.color_pair(2))
 
     elif action == "stop":
         stop_media(active)
